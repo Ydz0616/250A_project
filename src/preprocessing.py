@@ -75,9 +75,6 @@ def create_user_sequences(df: pd.DataFrame) -> Dict[str, List[List[Tuple[str, st
     """
     Group data into sequences of (Mode, Purpose) tuples per user.
     
-    There are different ways to define a "sequence". 
-    The prompt implies we want to train an HMM on the sequence of purposes.
-    
     Args:
         df (pd.DataFrame): Sorted processed dataframe.
 
@@ -103,14 +100,14 @@ def create_user_sequences(df: pd.DataFrame) -> Dict[str, List[List[Tuple[str, st
     
     pass
 
-def train_test_split_by_user(sequences: Dict[str, Any], test_size: float = 0.2, random_state: int = 42) -> Tuple[List[Any], List[Any]]:
+def train_test_split_by_user(sequences: Dict[str, Any], test_size: float = 0.2, random_seed: int = 42) -> Tuple[List[Any], List[Any]]:
     """
     Split data ensuring all sequences from a specific user go into the same split.
     
     Args:
         sequences (Dict): Dictionary of user sequences from create_user_sequences.
         test_size (float): Proportion of users to include in the test split.
-        random_state (int): Seed for reproducibility.
+        random_seed (int): Seed for reproducibility.
 
     Returns:
         Tuple[List, List]: (train_sequences, test_sequences)

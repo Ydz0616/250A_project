@@ -24,11 +24,11 @@ class HiddenMarkovModel:
         self.B = None
         self.pi = None
         
-    def initialize_parameters(self, random_state: int = 42):
+    def initialize_parameters(self, random_seed: int = 42):
         """
         Initialize A, B, and pi with random probabilities (normalized).
         """
-        np.random.seed(random_state)
+        np.random.seed(random_seed)
         
         # TODO: Initialize self.A (random, normalize rows to sum to 1)
         
