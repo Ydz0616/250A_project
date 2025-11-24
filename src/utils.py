@@ -47,11 +47,20 @@ def calculate_accuracy(true_sequences: List[List[str]], predicted_sequences: Lis
     Returns:
         float: Accuracy (0.0 to 1.0).
     """
-    # TODO: Flatten both lists
-    
-    # TODO: Compare element-wise
-    
-    # TODO: Compute ratio of matches to total elements
-    
-    pass
+    #Flatten both lists
+    true_flat = []
+    for seq in true_sequences:
+        for x in seq:
+            true_flat.append(x)
+
+    pred_flat = []
+    for seq in predicted_sequences:
+        for x in seq:
+            pred_flat.append(x)
+
+    #Compare element-wise
+    matches = sum(t == p for t, p in zip(true_flat, pred_flat))
+
+    #Compute ratio of matches to total elements
+    return matches / len(true_flat)
 

@@ -42,23 +42,29 @@ class HiddenMarkovModel:
         """
         Compute the alpha values (forward probabilities).
         
-        alpha[t, i] = P(o_1, ..., o_t, q_t = i | lambda)
+        alpha[i, t] = P(o_1, ..., o_t, q_t = i | lambda)
         
         Args:
             observation_sequence: List of integer indices representing observations.
             
         Returns:
-            alpha: Matrix of shape (T, num_states).
+            alpha: Matrix of shape (num_states, T).
         """
         T = len(observation_sequence)
-        alpha = np.zeros((T, self.num_states))
+        alpha = np.zeros((self.num_states, T))
         
-        # TODO: Initialization (t=0)
-        # alpha[0, i] = pi[i] * B[i, O_0]
-        
-        # TODO: Induction (t=1 to T-1)
-        # alpha[t, j] = sum_i(alpha[t-1, i] * A[i, j]) * B[j, O_t]
-        
+        #alpha_i0 = pi_i * b_i0
+        for i in range(self.num_states):
+            alpha[i][0] = self.pi[i] * self.B[i][observation_sequence[0]]
+
+        #alpha_j,t+1 = sum (alpha_it * a_ij * b_j,t+1)
+        for i in range(1, T):
+            observation = observation_sequence[i]
+            for j in range(self.num_states):
+                totalSum = 0
+                for k in range(self.num_states):
+                    totalSum += alpha[k][i - 1] * self.A[k][j] * self.B[j][observation]
+                alpha[j][i] = totalSum
         return alpha
 
     def _backward(self, observation_sequence: List[int]) -> np.ndarray:
@@ -127,21 +133,62 @@ class HiddenMarkovModel:
             List[int]: Most likely sequence of state indices.
         """
         T = len(observation_sequence)
-        delta = np.zeros((T, self.num_states))
-        psi = np.zeros((T, self.num_states), dtype=int)
-        
-        # TODO: Initialization
-        # delta[0, i] = pi[i] * B[i, O_0]
-        
-        # TODO: Recursion
-        # delta[t, j] = max_i(delta[t-1, i] * A[i, j]) * B[j, O_t]
-        # psi[t, j] = argmax_i(delta[t-1, i] * A[i, j])
-        
-        # TODO: Termination
-        # best_path_prob = max(delta[T-1, :])
-        # last_state = argmax(delta[T-1, :])
-        
-        # TODO: Path Backtracking
-        
-        pass
+        L = np.zeros((self.num_states, T))
 
+        #l_i0 = log(pi_i) + log(b_i0)
+        for i in range(self.num_states):
+            L[i][0] = np.log(self.pi[i]) + np.log(self.B[i][observation_sequence[0]])
+        
+        #l_j,t+1 = max_i[l_it + log(a_ij)] + log(b_j,t+1)
+        for i in range(1, T):
+            observation = observation_sequence[i]
+            for j in range(self.num_states):
+                totalMax = -np.inf
+                for k in range(self.num_states):
+                    totalMax = max(L[k][i - 1] + np.log(self.A[k][j]), totalMax)
+                L[j][i] = totalMax + np.log(self.B[j][observation])
+        
+        stateSequence = []
+        stateSequence.append(np.argmax(L[:, T - 1]))
+
+        #s*_t = argmax[l*_it + log(a_i,s*_t+1)]
+        for t in range(T - 2, -1, -1):
+            totalMax = -np.inf
+            maxState = 0
+            for i in range(self.num_states):
+                current = L[i][t] + np.log(self.A[i][stateSequence[-1]])
+                if current > totalMax:
+                    totalMax = current
+                    maxState = i
+            stateSequence.append(maxState)
+
+        return stateSequence[::-1]
+
+if __name__ == "__main__":
+    num_states = 2
+    num_observations = 3
+    hmm = HiddenMarkovModel(num_states, num_observations)
+
+    hmm.A = np.array([
+        [0.7, 0.3],
+        [0.4, 0.6]
+    ])
+
+    hmm.B = np.array([
+        [0.5, 0.4, 0.1],
+        [0.1, 0.3, 0.6]
+    ])
+
+    hmm.pi = np.array([0.6, 0.4])
+
+    #Observation sequence
+    seq = [0, 1, 2]
+
+    print("TEST: Forward Algorithm")
+    alpha = hmm._forward(seq)
+    print(alpha)
+    print("P =", np.sum(alpha[:, -1]))
+
+    print("TEST: Viterbi Decoding")
+    viterbi_path = hmm.predict_viterbi(seq)
+    print("Most likely state path:", viterbi_path)
