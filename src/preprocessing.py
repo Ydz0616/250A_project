@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Tuple, Dict, Any
 import random
+import matplotlib.pyplot as plt
 
 # ==========================================
 # Mappings
@@ -207,6 +208,20 @@ if __name__ == "__main__":
     print(f"min length of daily trips in testing: {min_len_test} ")
     
 
+    #Plots
+    fig, axes = plt.subplots(1, 2, figsize=(12,5))
+
+    df['mode'].value_counts().plot(kind='bar', ax=axes[0])
+    axes[0].set_title("Mode Distribution")
+    axes[0].set_xlabel("Mode")
+    axes[0].set_ylabel("Count")
+    df['purpose'].value_counts().plot(kind='bar', ax=axes[1], color='orange')
+    axes[1].set_title("Purpose Distribution")
+    axes[1].set_xlabel("Purpose")
+    axes[1].set_ylabel("Count")
+
+    plt.tight_layout()
+    plt.show()
 
 
 
