@@ -47,7 +47,8 @@ class FrequencyBaseline:
     Baseline that predicts purpose based on the observed frequency of (mode -> purpose) in training.
     """
     def __init__(self):
-        self.mode_purpose_probs: Dict[str, Dict[str, float]] = {}
+        self.mode_purpose_probs = {} #mode -> {purpose -> probability}
+        self.global_counts = {} #purpose -> count (for unseen modes)
         
     def fit(self, train_sequences: List[List[tuple]]):
         """
@@ -56,21 +57,86 @@ class FrequencyBaseline:
         Args:
             train_sequences: List of sequences, where each sequence is a list of (mode, purpose) tuples.
         """
-        # TODO: Count occurrences of each purpose given a mode
+        counts = {} #mode -> {purpose -> count}
+        global_counts = {} #purpose -> total count
+        for seq in train_sequences:
+            for mode, purpose in seq:
+                if mode not in counts:
+                    counts[mode] = {}
+                if purpose not in counts[mode]:
+                    counts[mode][purpose] = 0
+                counts[mode][purpose] += 1
+
+                if purpose not in global_counts:
+                    global_counts[purpose] = 0
+                global_counts[purpose] += 1
         
-        # TODO: Normalize counts to get probabilities P(purpose | mode)
+        mode_purpose_probs = {}
+        for mode in counts:
+            mode_purpose_probs[mode] = {}
+            total = sum(counts[mode].values())
+            for purpose in counts[mode]:
+                mode_purpose_probs[mode][purpose] = counts[mode][purpose] / total
         
-        pass
+        self.mode_purpose_probs = mode_purpose_probs
+        self.global_counts = global_counts
         
     def predict(self, mode: str) -> str:
         """
         Randomly sample a purpose given the mode using the learned probabilities.
         """
-        if mode not in self.mode_purpose_probs:
-            # TODO: Handle unseen modes (e.g., return most common purpose overall)
-            return "home"
-            
-        # TODO: Sample from self.mode_purpose_probs[mode]
+        probs = self.mode_purpose_probs[mode]
+        r = random.random()
+        cumulative = 0
         
-        return "home"
+        #Build a number line
+        for purpose, p in probs.items():
+            cumulative += p
+            if r <= cumulative:
+                return purpose
+        
+        return 'Home'
 
+#Baseline tests - GPT generated
+if __name__ == "__main__":
+    print("=== Testing TimeOfDayBaseline ===")
+    tod = TimeOfDayBaseline()
+
+    timestamps = [
+        pd.Timestamp("2024-01-01 08:00"),  # work
+        pd.Timestamp("2024-01-01 11:00"),  # home
+        pd.Timestamp("2024-01-01 12:30"),  # eat
+        pd.Timestamp("2024-01-01 14:30"),  # work
+        pd.Timestamp("2024-01-01 18:00"),  # eat
+        pd.Timestamp("2024-01-01 20:00"),  # leisure
+        pd.Timestamp("2024-01-01 03:00")   # home (default)
+    ]
+
+    for t in timestamps:
+        print(t, "→", tod.predict(t))
+
+
+    print("\n=== Testing FrequencyBaseline ===")
+    fb = FrequencyBaseline()
+
+    # Simple training set
+    train_sequences = [
+        [("car", "work"), ("car", "work"), ("car", "home")],
+        [("walk", "eat"), ("walk", "leisure")],
+        [("bus", "home"), ("bus", "home"), ("bus", "errand")]
+    ]
+
+    fb.fit(train_sequences)
+
+    print("Learned probabilities:")
+    for mode, probs in fb.mode_purpose_probs.items():
+        print(f"  {mode}: {probs}")
+
+    # Fix randomness
+    random.seed(0)
+
+    print("\nPredictions:")
+    print("car →", fb.predict("car"))
+    print("walk →", fb.predict("walk"))
+    print("bus →", fb.predict("bus"))
+    print("train (unseen mode) →", fb.predict("train"))
