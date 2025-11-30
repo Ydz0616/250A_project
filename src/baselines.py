@@ -24,12 +24,23 @@ class TimeOfDayBaseline:
         Predict purpose based on the hour of the timestamp.
         """
         hour = timestamp.hour
-        
-        # TODO: Implement the logic
-        # if 7 <= hour < 10: return "work"
-        # ...
-        
-        return "home" # Default fallback
+
+        if 7 <= hour < 10:
+            return "work"
+        if 10 <= hour < 12:
+            return "home"
+        if 12 <= hour < 13:
+            return "eat"
+        if 13 <= hour < 14:
+            return "work"
+        if 14 <= hour < 17:
+            return "work"
+        if 17 <= hour < 19:
+            return "eat"
+        if 19 <= hour < 22:
+            return "leisure"
+
+        return "home"
 
 class FrequencyBaseline:
     """
