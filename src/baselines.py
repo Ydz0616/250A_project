@@ -83,7 +83,7 @@ class FrequencyBaseline:
             self.mode_purpose_probs[mode] = {}
 
             for purpose,count in purpose_count.items():
-                self.mode_purpose_probsp[mode][purpose] = float( count/total_per_mode )
+                self.mode_purpose_probs[mode][purpose] = float( count/total_per_mode )
 
 
     def predict(self, mode: str) -> str:

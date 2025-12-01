@@ -68,8 +68,10 @@ def load_and_process_data(filepath: str) -> pd.DataFrame:
     df['purpose'] = df['end_purpose'].map(PURPOSE_MAPPING)
 
     
-    # Convert 'event_date' to datetime if needed, or ensure correct sorting
+    # convert event date and event time to datetime
+    
     df['event_date'] = pd.to_datetime(df['event_date'])
+    df['event_time'] = pd.to_datetime(df['event_time'])
     # Sort by ['user_id', 'event_date', 'seq_idx']
     df = df.sort_values(by=['user_id','event_date','seq_idx'])
     # # Filter out any rows where mode or purpose is NaN after mapping (if any)
@@ -108,7 +110,12 @@ def create_user_sequences(df: pd.DataFrame) -> Dict[str, List[List[Tuple[str, st
 
         daily_trips = user_df.groupby('event_date')
         for _,daily_user_trip in daily_trips:
-            seq = list(zip(daily_user_trip['mode'],daily_user_trip['purpose']))
+            seq = list(zip(
+            daily_user_trip['mode'],
+            daily_user_trip['purpose'],
+            daily_user_trip['event_date']
+            ))
+
             user_dict[user_id].append(seq)
 
     return user_dict
