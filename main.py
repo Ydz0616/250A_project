@@ -8,26 +8,39 @@ from src.utils import LabelEncoder, calculate_accuracy
 def main():
     # 1. Load and Preprocess Data
     print("Loading and processing data...")
-    data_path = "250A_project/data/mode_purpose_hmm.csv" # Adjust path if necessary
-    # df = load_and_process_data(data_path)
+    data_path = "./data/mode_purpose_hmm.csv" # Adjust path if necessary
+    df = load_and_process_data(data_path)
     
     # 2. Generate Sequences
     print("Generating user sequences...")
-    # user_sequences = create_user_sequences(df)
+    user_sequences = create_user_sequences(df)
     
     # 3. Train/Test Split
     print("Splitting data...")
-    # train_seqs, test_seqs = train_test_split_by_user(user_sequences, test_size=0.2)
+    train_seqs, test_seqs = train_test_split_by_user(user_sequences, test_size=0.2)
     
+    print("Sample Entry")
+    print(train_seqs[0])
     # Prepare Encoders
-    # mode_encoder = LabelEncoder()
-    # purpose_encoder = LabelEncoder()
+    mode_encoder = LabelEncoder()
+    purpose_encoder = LabelEncoder()
+
     
     # TODO: Fit encoders on all data (or just train data + known labels)
-    # all_modes = ...
-    # all_purposes = ...
-    # mode_encoder.fit(all_modes)
-    # purpose_encoder.fit(all_purposes)
+    all_modes = set()
+    all_purposes = set()
+
+    for seq in train_seqs+test_seqs:
+        for mode,purpose in seq:
+            all_modes.add(mode)
+            all_purposes.add(purpose)
+
+
+    mode_encoder.fit(list(all_modes))
+    purpose_encoder.fit(list(all_purposes))
+
+    print(f"Modes: {mode_encoder.classes_}")
+    print(f"Purposes: {purpose_encoder.classes_}")
     
     # Convert sequences to integers for HMM
     # train_seqs_indices = [[(mode_encoder.transform([m])[0], purpose_encoder.transform([p])[0]) for m, p in seq] for seq in train_seqs]
