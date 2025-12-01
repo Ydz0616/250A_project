@@ -113,7 +113,7 @@ def create_user_sequences(df: pd.DataFrame) -> Dict[str, List[List[Tuple[str, st
             seq = list(zip(
             daily_user_trip['mode'],
             daily_user_trip['purpose'],
-            daily_user_trip['event_date']
+            daily_user_trip['event_time']
             ))
 
             user_dict[user_id].append(seq)
