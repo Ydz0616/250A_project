@@ -161,6 +161,18 @@ P(O_t \mid Z_{t-1}, Z_t)
 \]
 This captures sequences of events instead of individual states. This puts more emphasis on behavioral patterns. Some behavior patterns are better described as pairs.
 
+\subsection*{Random Forest Baseline}
+
+This is a non-sequential machine learning baseline using a Random Forest classifier. Each trip is treated independently where the inputs include observed attributes such as mode of transportation, and the output label is the trip purpose.
+
+This is how the Random forest classifier is trained on trip data:
+\begin{itemize}
+    \item \textbf{Training:} For each observed trip, we construct a feature vector and use the true purpose as the target label. The Random Forest learns a set of decision trees that separate feature space into sections corresponding to different purposes.
+    \item \textbf{Prediction:} At test time, for each observed mode, the Random Forest predicts a purpose by calculating votes across trees.
+\end{itemize}
+
+This baseline is more flexible than the rule-based and pure frequency-based baselines. Comparing our HMM against this Random Forest baseline can help us understand the additional value coming from modeling temporal dependencies.
+
 \section{Results and Discussion}
 
 So far, our hypothesis is that HMM will outperform rule-based baseline and baseline models without sequential information. On top of this, we will compare the performance variation in different HMM structures, mainly, we would compare the performance between ordinary HMM and edge-emitting HMM, where the transition between two consecutive trip modes is used as a hidden state.
