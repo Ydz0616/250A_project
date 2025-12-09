@@ -53,6 +53,8 @@ There were four main preprocessing steps to ensure our HMM model worked properly
 
 Our final dataset contains 1,158,825 entries. Each entry represents a single trip made by a user, including the transportation mode, the trip purpose, and an index indicating its position within the user’s daily sequence.
 
+When we build our model, we will split our dataset into a training set and a testing set. We randomly shuffle users and assign 80\% to the training set and 20\% to the testing set. The daily sequences of trip mode and purpose belonging to each user stay together in the same split, which prevents behavioral patterns from leaking between the two sets and preserves temporal integrity.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Screenshot 2025-12-01 at 12.37.18 PM.png}
@@ -61,6 +63,10 @@ Our final dataset contains 1,158,825 entries. Each entry represents a single tri
 \end{figure}
 
 These models help us understand why some modes could be more informative than others during the decoding process.
+
+When we later use a Hidden Markov Model, we will run into the effects of imbalance in our dataset. Driving and walking dominate the data, so the MLE-estimated emission probabilities overweight these two modes, causing the rarer ones to be underrepresented. As a consequence, Viterbi decoding also tends to remain in higher-frequency purpose states, and the minority modes have drastically reduced influence due to their limited sample size.
+
+We will also have baseline models that do not all utilize information from low-sample modes in the same way. The rule-based model completely ignores them. The probability-based model conditions on modes, though minority modes provide weak signals because of their sparsity. The HMM incorporates the low-sample modes as well, though their influence remains limited for the same underlying reason.
 
 \section{Modeling and Inference}
 
