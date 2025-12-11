@@ -13,8 +13,8 @@
 \noindent\rule{\textwidth}{0.6pt}
 
 \begin{center}
-{\LARGE \textbf{Project Report}}\\[4pt]
-{\large \textbf{Second Draft}}\\[8pt]
+{\LARGE \textbf{Decoding Travel Purposes Through Sequential Probabilistic Models}}\\[4pt]
+{\large \textbf{Project Report}}\\[8pt]
 {\normalsize \textbf{Group 45:} Ajay Partha, Albert Ding, Bhrugu Bharathi, Yuandong Zhang}
 \end{center}
 
@@ -64,7 +64,15 @@ When we build our model, we will split our dataset into a training set and a tes
 
 These models help us understand why some modes could be more informative than others during the decoding process.
 
-When we later use a Hidden Markov Model, we will run into the effects of imbalance in our dataset. Driving and walking dominate the data, so the MLE-estimated emission probabilities overweight these two modes, causing the rarer ones to be underrepresented. As a consequence, Viterbi decoding also tends to remain in higher-frequency purpose states, and the minority modes have drastically reduced influence due to their limited sample size.
+When we later use a Hidden Markov Model, we will run into the effects of imbalance in our dataset. Driving and walking dominate the data (as seen in Figure 2), so the MLE-estimated emission probabilities overweight these two modes, causing the rarer ones to be underrepresented. As a consequence, Viterbi decoding also tends to remain in higher-frequency purpose states, and the minority modes have drastically reduced influence due to their limited sample size.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{Screenshot 2025-12-11 at 1.50.16 PM.png}
+    \caption{Normalized distributions of both
+trip modes and trip purposes}
+    \label{fig:placeholder}
+\end{figure}
 
 We will also have baseline models that do not all utilize information from low-sample modes in the same way. The rule-based model completely ignores them. The probability-based model conditions on modes, though minority modes provide weak signals because of their sparsity. The HMM incorporates the low-sample modes as well, though their influence remains limited for the same underlying reason.
 
@@ -303,7 +311,38 @@ Some limitations to our model is that mode observations aren't the strongest evi
 
 \section{Reflections \& Contributions}
 
-(Add your section later.)
+\subsection*{Advice for Future Students}
+
+A few suggestions for teams attempting a similar project are that we strongly recommend starting data preprocessing as soon as possible. The dataset that we worked on, Geolife, is very large and noisy which requires a lot of cleaning before any modeling can start. Modeling your data using confusion matrices or histograms can also help a lot with figuring out the best methods of interpreting the data. Doing a deeper dive into the data  allows you to lock in your modeling whether that is EM, or MLE so that evaluation and analysis can be aligned clearly. Finally, testing the models on small subsets of data is necessary to ensure it is correct before scaling to the complete dataset which makes debugging significantly harder.
+
+\subsection*{Team Contributions}
+\setlength{\parindent}{0pt}
+
+\textbf{Ajay Partha:} Worked with the conceptual and technical design of the modeling, which included helping with outlining the code structure, the experimental setup, and translating probabilistic modeling ideas into a clear implementation scheme. Wrote sections of the report that explained modeling equations and contributed to maintaining the project repository.
+
+\textbf{Albert Ding:} ...
+    
+\textbf{Bhrugu Bharathi:} ...
+    
+\textbf{Yuandong Zhang:} ...
+
+\subsection*{Individual Reflections}
+\setlength{\parindent}{0pt}
+
+\textbf{Ajay:}  
+The project really helped complete my understanding of sequential probabilistic models by connecting the complicated math of HMMs to real world sequences. Working with the Geolife dataset also highlighted the obstacles that come with real-world datasets. These obstacles being imbalances in the data, and some clear data outliers. Finally, implementing the MLE method and Viterbi decoding clarified how emission and transition probabilities evolve from a raw sequence and how it is shaped to be the most-likely latent-state method.
+
+\textbf{Albert:}  
+...
+
+\textbf{Bhrugu:}  
+...
+
+\textbf{Yuandong:}  
+...
+
+\subsection*{Use of Generative AI}
+
 
 \section{References}
 
