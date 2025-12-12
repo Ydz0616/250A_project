@@ -17,13 +17,17 @@ src/
 ├── preprocessing.py        # Data cleaning, transformation, and sequence preparation
 ├── utils.py                # General utility and helper functions
 ├── *.png                   # Generated visualizations (e.g., purpose_distribution.png)
-data/                        # Datasets directory
+data/                       # Datasets directory
 README_trip_sequence.md     # Documentation on trip sequence data format
+exp_results/                # Experiment results
+├── exp_raw.html            # raw mode results
+├── exp_granular_level_day.html   # time of day granularity results
+├── exp_granular_level_hour.html  # hour granularity results
 latex/
 ├── main.tex                # LaTeX source for the research paper/report
 plans/                      # Project planning and scaffolding documents
 demo.ipynb                  # Jupyter Notebook demo of the full pipeline
-demo.html                   # HTML export of the demo notebook
+
 ```
 
 ## Getting Started
