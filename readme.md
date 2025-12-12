@@ -2,6 +2,9 @@
 
 This repository contains the code and resources for predicting trip purposes using Hidden Markov Models (HMM) and other baseline methods.
 
+**Contributors:** Ajay Partha (apartha@ucsd.edu) · Albert Ding (axding@ucsd.edu) · Bhrugu Bharathi (bbharathi@ucsd.edu) · Yuandong Zhang (yuz371@ucsd.edu)
+
+
 ## Overview
 
 Understanding the purpose of trips is crucial for transportation planning and analysis. This project implements a machine learning pipeline to predict trip purposes based on sequence data. It includes data preprocessing, model implementation (specifically HMM), baseline comparisons, and visualization of results.
